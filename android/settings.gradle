@@ -1,0 +1,3 @@
+rootProject.name = 'NativeToJSPro'
+
+include ':app'
