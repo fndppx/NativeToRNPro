@@ -18,5 +18,10 @@ import {
     Platform,
 } from 'react-native';
 
+//listView
+// import  ListViewBasics from  './app/components/QCListView';
+//navigation
+import  navigation from  './app/components/QCNavigation';
 
-import  ListViewBasics from  './app/components/QCListView';
+// AppRegistry.registerComponent('NativeToJSPro', () => ListViewBasics);
+AppRegistry.registerComponent('NativeToJSPro', () => navigation);
