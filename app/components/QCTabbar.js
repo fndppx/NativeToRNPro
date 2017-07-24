@@ -4,7 +4,7 @@
 import React, {Component} from 'react';
 import {Text, StyleSheet, Image,Platform} from 'react-native';
 
-import px2dp from '../../../../GitHubDemo/NativeToRNPro/app/utils/px2dp';
+//import px2dp from '../../../../GitHubDemo/NativeToRNPro/app/utils/px2dp';
 import FirstPage from '../page/SecondPageComponent'
 import TabNavigator from 'react-native-tab-navigator';
 export default class TabBar extends Component{
@@ -31,7 +31,7 @@ export default class TabBar extends Component{
                     onPress={() => this.setState({ selectedTab: 'home' })}
                     badgeText = ''>
 
-                    <FirstPage {...this.props} />
+                    <FirstPage navigator={navigator} {...this.props} />
                 </TabNavigator.Item>
                 <TabNavigator.Item
                     title="回看"
@@ -62,7 +62,7 @@ export default class TabBar extends Component{
 const styles = StyleSheet.create({
     iconStyle: {
         width: Platform.OS === 'ios' ? 22 : 22,
-        height: Platform.OS === 'ios' ? 22 : 22
+        height: Platform.OS === 'ios' ? 22 : 10
     },
 
     selectedTitleStyle:{

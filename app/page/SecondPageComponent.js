@@ -10,6 +10,8 @@ import {
     StyleSheet,
     Platform,
     ListView,
+    Image,
+    navigation,
 } from 'react-native';
 
 import FirstPageComponent from './FirstPageComponent';
@@ -20,16 +22,12 @@ export default class SecondPageComponent extends React.Component {
     constructor(props) {
         super(props);
 
-        // dataSource : new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
-            dataSource : new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-                // dataSource: ds.cloneWithRows([
-                //     'John', 'Joel', 'James', 'Jimmy', 'Jackson', 'Jillian', 'Julie', 'Devin'
-                // ])
-        }
+            dataSource: ds.cloneWithRows(['第一行', '第二行']),
+        };
 
     }
-
 
     _onPressButton() {
         const { navigator } = this.props;
@@ -39,11 +37,22 @@ export default class SecondPageComponent extends React.Component {
         }
     }
 
+    _navigate(name, type = 'Normal') {
+        this.props.navigator.push({
+            component: SecondPage,
+            passProps: {
+                name: name
+            },
+            type: type
+        })
+    }
+
+
     topView(){
         return(
             <View style={styles.topViewStyle}>
                 {/*<TouchableOpacity onPress={()=>{this.pushToDetail()}}>*/}
-                    <Text style={styles.textStyle}>test</Text>
+                <Text style={styles.textStyle}>test</Text>
                 {/*</TouchableOpacity>*/}
             </View>
 
@@ -54,36 +63,42 @@ export default class SecondPageComponent extends React.Component {
     render() {
         return (
             <View>
-              {/*var  topView={this.topView.bind(this)}*/}
+                {/*var  topView={this.topView.bind(this)}*/}
                 {this.topView.bind(this)()}
-                {/*<ListView */}
-                    {/*dataSource={this.state.dataSource}*/}
-                    {/*renderRow={this.renderRow.bind(this)}*/}
-                {/*/>*/}
+                <ListView
+                    dataSource={this.state.dataSource}
+                    renderRow={this.renderRow.bind(this)}
+                />
+
             </View>
         )
     }
+    pushDetail(){
+        this.props.navigator.push({
+            component: SecondPageComponent,
+            passProps: {
+                name: 'hh'
+            },
+            type: 'Normal'
+        })
 
+    }
+
+    /*参数传递需要加上{}*/
+    /* onPress={() =>
+     //  navigate('Profile', { name: 'Jane' }*/
     renderRow(rowData){
         return(
-            <TouchableOpacity onPress={()=>alert(0)}>
-                {/*<View style={styles.listViewStyle}>*/}
-                    {/*/!*左边*!/*/}
-                    {/*<Image source={{uri:this.dealWithImgUrl(rowData.imageUrl)}} style={styles.imageViewStyle}/>*/}
-                    {/*/!*右边*!/*/}
-                    {/*<View style={styles.rightViewStyle}>*/}
-                        {/*<View style={styles.rightTopViewStyle}>*/}
-                            {/*<Text>{rowData.title}</Text>*/}
-                            {/*<Text>{rowData.topRightInfo}</Text>*/}
-                        {/*</View>*/}
-                        {/*<Text style={{color:'gray'}}>{rowData.subTitle}</Text>*/}
-                        {/*<View  style={styles.rightBottomViewStyle}>*/}
-                            {/*<Text style={{color:'red'}}>{rowData.subMessage}</Text>*/}
-                            {/*<Text>{rowData.bottomRightInfo}</Text>*/}
-                        {/*</View>*/}
-                    {/*</View>*/}
-                {/*</View>*/}
-                <Text>aaa</Text>
+            <TouchableOpacity onPress={this.pushDetail.bind(this)}>
+                <View style={styles.cellStyle}>
+                    <Image
+                        style={styles.cellImageStyle}
+                        source={{uri: 'https://facebook.github.io/react/img/logo_og.png'}}
+                    />
+                    <Text style={{fontSize:16}}>{rowData}</Text>
+                    <View style={{height:10}}>
+                    </View>
+                </View>
             </TouchableOpacity>
         )
     }
@@ -96,7 +111,7 @@ const  styles = StyleSheet.create({
         paddingRight:10,
         marginTop: Platform.OS == 'ios' ? 25 : 0,
         height: Platform.OS == 'ios' ? 45 : 45,
-        backgroundColor:'gray',
+        backgroundColor:'red',
 
         // 设置主轴的方向
         flexDirection:'row',
@@ -114,5 +129,12 @@ const  styles = StyleSheet.create({
     textStyle:{
         paddingTop:20,
         fontSize:20,
+    },
+    cellStyle:{
+        flex:1,
+    },
+    cellImageStyle:{
+        height:200,
+
     }
 })
