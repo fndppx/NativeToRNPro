@@ -8,7 +8,7 @@ import {
     AppRegistry,
 } from 'react-native';
 
-import FirstPageComponent from '../FirstPageComponent'
+import FirstPageComponent from '../page/FirstPageComponent'
 
 export default class  NavigationSample extends  React.Component{
     render(){

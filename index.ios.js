@@ -21,7 +21,19 @@ import {
 //listView
 // import  ListViewBasics from  './app/components/QCListView';
 //navigation
-import  navigation from  './app/components/QCNavigation';
+// import  navigation from  './app/components/QCNavigation';
+
+import Navigation from './app/components/QCNavigationCustom';
+
+
+export default class NativeToJSPro extends Component {
+    render() {
+        return (
+            <Navigation/>
+        );
+    }
+}
+AppRegistry.registerComponent('NativeToJSPro', () => NativeToJSPro);
+
 
 // AppRegistry.registerComponent('NativeToJSPro', () => ListViewBasics);
-AppRegistry.registerComponent('NativeToJSPro', () => navigation);
