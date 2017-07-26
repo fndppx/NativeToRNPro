@@ -25,7 +25,8 @@ import {
 
 import Navigation from './app/components/QCNavigationCustom';
 
-
+console.disableYellowBox = true;
+console.warn('YellowBox is disabled.');
 export default class NativeToJSPro extends Component {
     render() {
         return (

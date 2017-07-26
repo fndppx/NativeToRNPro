@@ -15,24 +15,25 @@ import {
 } from 'react-native';
 
 import FirstPageComponent from './FirstPageComponent';
-// import ListView1 from '../components/QCListView';
+import homeData from  '../LocalData/home.json'
 
 export default class SecondPageComponent extends React.Component {
-
+    //有分號
+    static defaultProps = {
+        // dataArray:homeData.rooms,
+        dataArray:[],
+    };
     constructor(props) {
         super(props);
-
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
-            dataSource: ds.cloneWithRows(['第一行', '第二行']),
+            dataSource: ds.cloneWithRows(this.props.dataArray),
         };
-
     }
 
     _onPressButton() {
         const { navigator } = this.props;
         if(navigator) {
-            //很熟悉吧，入栈出栈~ 把当前的页面pop掉，这里就返回到了上一个页面:FirstPageComponent了
             navigator.pop();
         }
     }
@@ -52,13 +53,14 @@ export default class SecondPageComponent extends React.Component {
         return(
             <View style={styles.topViewStyle}>
                 {/*<TouchableOpacity onPress={()=>{this.pushToDetail()}}>*/}
-                <Text style={styles.textStyle}>test</Text>
+                {/*<Text style={styles.textStyle}>test</Text>*/}
                 {/*</TouchableOpacity>*/}
-            </View>
 
+                <Image source={ {uri:'qingclasslogo_icon'} } style={{height:22,width:40,bottom:-10}}/>
+
+            </View>
         )
     }
-
 
     render() {
         return (
@@ -84,6 +86,40 @@ export default class SecondPageComponent extends React.Component {
 
     }
 
+    fetchNetData(){
+        //this 不能写里边
+        let that = this
+        fetch('https://streaming-jupiter.qingclass.com/api/streaming/v1/room/all', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=utf-8',
+                'x-version-key':'a27a1bf3-b97d-4deb-bfef-7975fc00926d',
+                'x-session-id':'9856be32-e634-4fd2-a6da-eff533243cb0'
+            }
+        }).then(function(res){
+            if (res.ok){
+                res.json().then(function(data){
+                    // alert(data.rooms[0].title)
+                    that.setState( {
+                        dataSource:that.state.dataSource.cloneWithRows(data.rooms)
+                            })
+                })
+            }else{
+                alert('error')
+            }
+        }).done()
+
+    }
+
+    componentDidMount() {
+        this.fetchNetData();
+    //通过改变state动态加载view
+    //     this.setState( {
+    //         dataSource:this.state.dataSource.cloneWithRows(homeData.rooms)
+    //     })
+    }
+
     /*参数传递需要加上{}*/
     /* onPress={() =>
      //  navigate('Profile', { name: 'Jane' }*/
@@ -93,28 +129,27 @@ export default class SecondPageComponent extends React.Component {
                 <View style={styles.cellStyle}>
                     <Image
                         style={styles.cellImageStyle}
-                        source={{uri: 'https://facebook.github.io/react/img/logo_og.png'}}
+                        source={{uri: rowData.cover}}
                     />
-                    <Text style={{fontSize:16}}>{rowData}</Text>
+                    <Text style={{fontSize:16}}>{rowData.title}</Text>
                     <View style={{height:10}}>
                     </View>
                 </View>
             </TouchableOpacity>
         )
     }
+
 }
 
 
 const  styles = StyleSheet.create({
     topViewStyle:{
-        paddingLeft:10,
-        paddingRight:10,
-        marginTop: Platform.OS == 'ios' ? 25 : 0,
-        height: Platform.OS == 'ios' ? 45 : 45,
-        backgroundColor:'red',
+        marginTop: 0,
+        height:64,
+        backgroundColor:'white',
 
-        // 设置主轴的方向
-        flexDirection:'row',
+        // // 设置主轴的方向
+        // flexDirection:'row',
         // 垂直居中 ---> 设置侧轴的对齐方式
         alignItems:'center',
 
@@ -127,7 +162,7 @@ const  styles = StyleSheet.create({
         backgroundColor: '#06c1ae'
     },
     textStyle:{
-        paddingTop:20,
+        // paddingTop:20,
         fontSize:20,
     },
     cellStyle:{
