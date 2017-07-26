@@ -12,6 +12,7 @@ import {
     ListView,
     Image,
     navigation,
+    ScrollView,
 } from 'react-native';
 
 import FirstPageComponent from './FirstPageComponent';
@@ -64,13 +65,16 @@ export default class SecondPageComponent extends React.Component {
 
     render() {
         return (
-            <View>
+            <View style={styles.container}>
                 {/*var  topView={this.topView.bind(this)}*/}
-                {this.topView.bind(this)()}
-                <ListView
-                    dataSource={this.state.dataSource}
-                    renderRow={this.renderRow.bind(this)}
-                />
+                {/*{this.topView.bind(this)()}*/}
+                {this.topView()}
+                <ScrollView>
+                    <ListView
+                        dataSource={this.state.dataSource}
+                        renderRow={this.renderRow.bind(this)}
+                    />
+                </ScrollView>
 
             </View>
         )
@@ -103,7 +107,7 @@ export default class SecondPageComponent extends React.Component {
                     // alert(data.rooms[0].title)
                     that.setState( {
                         dataSource:that.state.dataSource.cloneWithRows(data.rooms)
-                            })
+                    })
                 })
             }else{
                 alert('error')
@@ -113,11 +117,10 @@ export default class SecondPageComponent extends React.Component {
     }
 
     componentDidMount() {
-        this.fetchNetData();
-    //通过改变state动态加载view
-    //     this.setState( {
-    //         dataSource:this.state.dataSource.cloneWithRows(homeData.rooms)
-    //     })
+        // this.fetchNetData();
+        this.setState( {
+            dataSource:this.state.dataSource.cloneWithRows(homeData.rooms)
+        })
     }
 
     /*参数传递需要加上{}*/
@@ -138,9 +141,7 @@ export default class SecondPageComponent extends React.Component {
             </TouchableOpacity>
         )
     }
-
 }
-
 
 const  styles = StyleSheet.create({
     topViewStyle:{
@@ -148,18 +149,14 @@ const  styles = StyleSheet.create({
         height:64,
         backgroundColor:'white',
 
-        // // 设置主轴的方向
-        // flexDirection:'row',
-        // 垂直居中 ---> 设置侧轴的对齐方式
+        // 垂直居中
         alignItems:'center',
 
-        // 设置主轴的对齐方式
-        justifyContent:'space-around'
+        // 水平
+        justifyContent:'center'
     },
     container: {
-        // flex: 0,
-        alignItems:'center',
-        backgroundColor: '#06c1ae'
+        flex:1,
     },
     textStyle:{
         // paddingTop:20,
@@ -167,6 +164,13 @@ const  styles = StyleSheet.create({
     },
     cellStyle:{
         flex:1,
+        backgroundColor:'gray',
+
+    },
+    middleStyle:{
+        backgroundColor: 'gray',
+        marginBottom:7,
+        justifyContent:'space-between'
     },
     cellImageStyle:{
         height:200,
