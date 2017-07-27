@@ -13,9 +13,11 @@ import {
     Image,
     navigation,
     ScrollView,
+    RefreshControl,
 } from 'react-native';
+import FirstPage from '../page/SecondPageComponent'
 
-import FirstPageComponent from './FirstPageComponent';
+import LiveDetailPage from './LiveDetailPage';
 import homeData from  '../LocalData/home.json'
 
 export default class SecondPageComponent extends React.Component {
@@ -28,7 +30,10 @@ export default class SecondPageComponent extends React.Component {
         super(props);
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
+            isRefreshing: false,
+            loaded: 0,
             dataSource: ds.cloneWithRows(this.props.dataArray),
+
         };
     }
 
@@ -53,7 +58,7 @@ export default class SecondPageComponent extends React.Component {
     topView(){
         return(
             <View style={styles.topViewStyle}>
-                {/*<TouchableOpacity onPress={()=>{this.pushToDetail()}}>*/}
+                {/*<TouchableOpacity onPress={()=>{this._pushToDetail()}}>*/}
                 {/*<Text style={styles.textStyle}>test</Text>*/}
                 {/*</TouchableOpacity>*/}
 
@@ -62,28 +67,79 @@ export default class SecondPageComponent extends React.Component {
             </View>
         )
     }
+    _pushToDetail(){
+        this.props.navigator.push(
+            {
+                component: LiveDetailPage, // 要跳转的版块
+                title:'详情页',
+                passProps:{
+                    tabBar: {
+                        hide: () => this.props.tabBar.hide(),
+                        show: () => this.props.tabBar.show()
+                    }
+                }
+            }
+        )
+    }
+    _onRefresh() {
+        this.setState({isRefreshing: true});
+        setTimeout(()=>{
+            this.setState( {
+                dataSource:this.state.dataSource.cloneWithRows(homeData.rooms),
+            })
+            this.setState({isRefreshing: false})
+        },2000)
+    }
 
+    _renderLevelItem(){
+        // 组件数组
+        var itemArr = [];
+        for(var i=0; i<3; i++){
+            itemArr.push(
+                <View style={{width:100,backgroundColor:'red'}}>
+                    <Text style={{textAlign:'center',backgroundColor:'gray',}}>111</Text>
+
+                </View>
+            );
+        }
+        // 返回组件数组
+        return itemArr;
+    }
     render() {
         return (
             <View style={styles.container}>
-                {/*var  topView={this.topView.bind(this)}*/}
-                {/*{this.topView.bind(this)()}*/}
                 {this.topView()}
-                <ScrollView>
+                {/*<View style={styles.tabStyles}>*/}
+                {/*{this._renderLevelItem()}*/}
+                {/*</View>*/}
+                <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.isRefreshing}
+                            onRefresh={this._onRefresh.bind(this)}
+                            tintColor="#ff0000"
+                            title="Loading..."
+                            colors={['#ff0000', '#00ff00', '#0000ff']}
+                        />}>
                     <ListView
                         dataSource={this.state.dataSource}
                         renderRow={this.renderRow.bind(this)}
+                        enableEmptySections={true}
                     />
                 </ScrollView>
-
             </View>
+
         )
     }
     pushDetail(){
         this.props.navigator.push({
             component: SecondPageComponent,
             passProps: {
-                name: 'hh'
+                name: 'hh',
+                // tabBar: {
+                //     hide: () => this.props.tabBar.hide(),
+                //     show: () => this.props.tabBar.show()
+                // }
             },
             type: 'Normal'
         })
@@ -128,17 +184,20 @@ export default class SecondPageComponent extends React.Component {
      //  navigate('Profile', { name: 'Jane' }*/
     renderRow(rowData){
         return(
-            <TouchableOpacity onPress={this.pushDetail.bind(this)}>
-                <View style={styles.cellStyle}>
-                    <Image
-                        style={styles.cellImageStyle}
-                        source={{uri: rowData.cover}}
-                    />
-                    <Text style={{fontSize:16}}>{rowData.title}</Text>
-                    <View style={{height:10}}>
-                    </View>
+        <TouchableOpacity onPress={()=>{{this._pushToDetail()}}}>
+            <View style={styles.cellStyle}>
+                <Image
+                    style={styles.cellImageStyle}
+                    resizeMode={'cover'}
+                    source={{uri: rowData.cover}}
+                />
+
+                <Text style={{fontSize:16}}>{rowData.title}</Text>
+                <View style={{height:10}}>
                 </View>
-            </TouchableOpacity>
+            </View>
+        </TouchableOpacity>
+
         )
     }
 }
@@ -164,8 +223,14 @@ const  styles = StyleSheet.create({
     },
     cellStyle:{
         flex:1,
-        backgroundColor:'gray',
+        // backgroundColor:'gray',
 
+    },
+    tabStyles:{
+        backgroundColor:'gray',
+        height:44,
+        flexDirection:'row',
+        justifyContent:'space-around',
     },
     middleStyle:{
         backgroundColor: 'gray',

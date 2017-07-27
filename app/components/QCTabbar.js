@@ -2,27 +2,33 @@
  * Created by SXJH on 17/4/18.
  */
 import React, {Component} from 'react';
-import {Text, StyleSheet, Image,Platform} from 'react-native';
+import {Text, StyleSheet, Image,Platform,Navigator} from 'react-native';
 
-//import px2dp from '../../../../GitHubDemo/NativeToRNPro/app/utils/px2dp';
 import FirstPage from '../page/SecondPageComponent'
 import TabNavigator from 'react-native-tab-navigator';
 export default class TabBar extends Component{
     static defaultProps = {
         selectedColor: 'rgb(22,131,251)',
-        normalColor: '#a9a9a9'
+        normalColor: '#a9a9a9',
+        tabBarHeight:49,
     };
 
     constructor(props) {
         super(props);
         this.state = {
-            selectedTab: 'home'
+            selectedTab: 'home',
+            tabBarHeight: 49
+
         };
+    }
+    handleTabBar(state){
+        this.setState({
+            tabBarHeight: state ? 49 : 0
+        });
     }
     render(){
         return (
-
-            <TabNavigator tabBarStyle={{ backgroundColor:'white' }} style={{backgroundColor: 'white'}}>
+            <TabNavigator tabBarStyle={{ height:this.state.tabBarHeight,backgroundColor:'white' }} sceneStyle={{paddingBottom: this.state.tabBarHeight}}>
                 <TabNavigator.Item
                     title="直播"
                     selected={this.state.selectedTab === 'home'}
@@ -31,7 +37,21 @@ export default class TabBar extends Component{
                     onPress={() => this.setState({ selectedTab: 'home' })}
                     badgeText = ''>
 
-                    <FirstPage navigator={navigator} {...this.props} />
+                    <Navigator
+                        initialRoute={{name:"直播", component:FirstPage, passProps: {
+                            tabBar: {
+                                hide: () => this.handleTabBar(false),
+                                show: () => this.handleTabBar(true)
+                            }
+                        }}}
+                        configureScene={()=>{
+                            return Navigator.SceneConfigs.PushFromRight;
+                        }}
+                        renderScene={(route,navigator)=>{
+                            let Component = route.component;
+                            return <Component {...route.passProps} navigator={navigator}/>;
+                        }}
+                    />
                 </TabNavigator.Item>
                 <TabNavigator.Item
                     title="回看"
@@ -57,12 +77,17 @@ export default class TabBar extends Component{
             </TabNavigator>
         );
     }
+
+
+
 }
+
+
 
 const styles = StyleSheet.create({
     iconStyle: {
-        width: Platform.OS === 'ios' ? 22 : 22,
-        height: Platform.OS === 'ios' ? 22 : 10
+        width: 22,
+        height:22,
     },
 
     selectedTitleStyle:{

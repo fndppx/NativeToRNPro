@@ -3,6 +3,9 @@ package com.nativetojspro;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import cn.reactnative.modules.update.UpdatePackage;
+import ca.jaysoo.extradimensions.ExtraDimensionsPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -24,6 +27,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new UpdatePackage(),
+            new ExtraDimensionsPackage(),
+            new RNDeviceInfo(),
             new VectorIconsPackage()
       );
     }

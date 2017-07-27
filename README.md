@@ -7,3 +7,6 @@
 
 RCTImageLoader.h not found 
 npm install react-native-fs@2.0.1-rc.2 --save
+
+
+react-native link react-native-device-info
